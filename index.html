@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Test</title>
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
+
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Josefin Sans', sans-serif;
+        }
+        .mainDiv {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            background-color: #3498db;
+        }
+        .centerDiv {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        h1 {
+            text-transform: capitalize;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ecf0f1;
+            text-shadow: 1px 2px 3px #2980b9;
+            font-size: 2.1rem;
+        }
+        h2 {
+            text-align: center;
+        }
+        textarea {
+            background-color: #444;
+            box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+            border-radius: 10px 10px 0 0;
+            border: 20px solid #34495e;
+            color: white;
+            font-size: 1rem;
+        }
+        .mainbtn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 5px solid #2980b9;
+            background: #ecf0f1;
+            font-size: 1rem;
+        }
+        textarea::placeholder {
+            color: #ecf0f1;
+        }
+        #compareMsg {
+            color: yellow;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body oncopy="return false" oncut="return false" onpaste="return false">
+    <div class="mainDiv">
+        <div class="centerDiv">
+            <h1>Welcome To Typying Speed Test</h1>
+            <h2 id = "msg" > </h2>
+            <br>
+            <textarea name="mywords" id="mywords" cols="100" rows="10" placeholder="Remember, be nice"></textarea>
+            <br>
+            <button id="btn" class="mainbtn">Start</button>
+            <h3 id="compareMsg"></h3>
+        </div>
+    </div>
+
+    <script>
+
+        let setofWords = [ "India, officially the Republic of India,", 
+        "is a country in South Asia.", 
+        "It is the second-most populous country,", 
+        "the seventh-largest country by area,",
+        "and the most populous democracy in the world." ];
+
+        /*
+        Dynamic Typing Teste
+        1: When user clickek on the start button then only enabled textarea or else it will be disabled and vice-vers.
+        2: Every time a new set of lines on top. Whenever a start button is pressed. Not done one.
+        3: Get the time and change the button text to done.
+        4: Get the end time when the user clicked on done. Find the total time taken.
+        5: Find the total words on the setofWords.
+        6: Find the speed of the user and show it on the top when user clicked on done.
+        7: Then call the comarewords function and find how many words are matching and how many not. Display the result on top with speed.        
+        */
+
+        const msg = document.getElementById('msg');
+        const typedWords = document.getElementById('mywords');
+        // console.log(typedWords.value);
+        const btn = document.getElementById('btn');
+        let startTime, endTime;
+        let compareMsg = document.getElementById('compareMsg');
+
+        const playGame = () => {
+            let randomNumber = Math.floor ( Math.random () * setofWords.length);
+            // console.log(randomNumber);
+            msg.innerText = setofWords [randomNumber];
+            let date = new Date ();
+            startTime = date.getTime ();
+            btn.innerText = "Done";
+            typedWords.value = "";
+            compareMsg.innerText = "Compare your result:\n\n";
+            compareMsg.innerText += msg.innerText;
+            compareMsg.innerText = "Compare your result:\n\n";
+            compareMsg.innerText += msg.innerText;
+        };
+
+        const wordCounter = (str) => {
+            // console.log (str);
+            let response = str.split(" ").length;
+            // console.log (response);
+            return response;
+        };
+
+        const compareWords = (str1, str2) => {
+            let word1 = str1.split(" ");
+            // console.log(str1);
+            // console.log(str2);
+            let word2 = str2.split(" ");
+            let cnt = 0;
+
+            word1.forEach(function (item, index) {
+                if(item === word2[index]) {
+                    cnt++;
+                };
+            });
+
+            let errorWords = (word1.length - cnt);
+            return (cnt + " correct words out of " +word1.length+ " words and total number of incorrect words is/are " +errorWords+ " .");
+        };
+        const endGame = () => {
+            let date = new Date ();
+            endTime = date.getTime ();
+            let totalTime = ( (endTime - startTime) / 1000 );
+            // console.log (totalTime);
+
+            let totalStr = typedWords.value;
+            // console.log(totalStr);
+            let wordCount = wordCounter(totalStr);
+            // console.log(wordCount);
+            let speed = Math.round((wordCount / totalTime) * 60);
+            // console.log(speed);
+            let finalMsg = "Your typing speed is " +speed+ " words per minutes ";
+            finalMsg += compareWords (msg.innerText, typedWords.value);
+            msg.innerText = finalMsg;
+            btn.innerText = "Start";
+        };
+        
+        btn.addEventListener ( 'click', function () {
+            // console.log(this);
+            if (this.innerText === 'Start') {
+                typedWords.disabled = false;
+                playGame ();
+            } else if (this.innerText === 'Done') {
+                typedWords.disabled = true;
+                endGame();
+            }
+        })
+    </script>
+</body>
+</html>
